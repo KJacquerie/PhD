@@ -27,7 +27,7 @@ include("PARAMS_cycle.jl")
 const new_network=0
 const fMax = 50
 const bound_type = "SB"
-const experiment_type = "low_dep"
+const experiment_type = "normal" #high-dep
 experiment_name = "Graupner2012_VAR"
 
 
@@ -142,9 +142,14 @@ if(new_network==1)
     neurons_freq  = zeros(N_samples*N_states, ncells)   
     neurons_freq[:,1] .= 1 # inhibitory cell
 
-    neurons_freq[:,2:6] = round.(rand(Uniform(73,76),N_samples*N_states,5))
+    neurons_freq[:,2:6] = round.(rand(Uniform(50,60),N_samples*N_states,5))
+    neurons_freq[:,7:end-1] = round.(rand(Uniform(0.1,1),N_samples*N_states,95))
+    neurons_freq[:,end] .= 25.00
+    #=
+     neurons_freq[:,2:6] = round.(rand(Uniform(73,76),N_samples*N_states,5))
     neurons_freq[:,7:end-1] = round.(rand(Uniform(0.1,5),N_samples*N_states,95))
     neurons_freq[:,end] .= 25.00
+    =#
     writedlm(@sprintf("%s/data/%s/neurons_freq.dat", directory_name, experiment_name), neurons_freq, header=false)
 else
     neurons_freq= readdlm(@sprintf("%s/data/%s/neurons_freq.dat",directory_name, experiment_name))
@@ -217,11 +222,10 @@ w_init = 0.5*ones(nPre,nPost)
 
 #idx_wl = convert(Matrix{Int64}, readdlm("idx_wl.dat"))
 
-gCAMPA_init_mat = [0.0001 0.0005 0.001 0.002 0.005 0.008 0.01]
-tauG_mat = range(100, 1000, length = 10)
+gCAMPA_init_mat = [0.0001 0.00025 0.0005 0.00075 0.001 0.0025 0.005 0.0075 0.01]
+tauG_mat = [10 20 30 40 50 60 70 80 90 100 200 300 400 500 600 700 800 900 1000 2000  ]
 for idx_tauG=1:1:length(tauG_mat)
-    #for idx_gCAMPA_init=1:1:length(gCAMPA_init_mat)
-    idx_gCAMPA_init=2
+    for idx_gCAMPA_init=1:1:length(gCAMPA_init_mat)
         println("tauG=", tauG_mat[idx_tauG])
         println("gCAMPA0=", gCAMPA_init_mat[idx_gCAMPA_init])
         @time () = simulateTOY_ncellsScenarioNMOD(
@@ -234,6 +238,6 @@ for idx_tauG=1:1:length(tauG_mat)
             tauG_mat[idx_tauG], 
             idx_gCAMPA_init
         )
-    #end
+    end
 end
 

@@ -822,13 +822,14 @@ end
 %           
 %               SCATTER wl STATE
 %                   normalized
+% between the range defined by tonic 
 %
 %  -----------------------------------------
+% FOR THE PAPER I CHOOSE THIS VERSION  
 
 
 
-
-idx=5; 
+idx=3; 
 smax_tonic = MM;%max(max([wl_STATE(:,idx), wl_STATE(:,idx+2)]));
 smin_tonic = mm;%min(min([wl_STATE(:,idx), wl_STATE(:,idx+2)]));
 figure
@@ -853,12 +854,12 @@ figure
 set(gcf,'PaperPositionMode','auto');
 set(gcf, 'PaperUnits', 'centimeters');
 set(gcf, 'PaperPosition', [0 0 ptx_scatter*1.5 ptx_scatter*1.5]);
-print(sprintf('%s/%s/fig/%s/NORM_ScatterTonic_Article_wl_1',directory_name, Fig_num,experiment_name), '-depsc', '-painters')
+print(sprintf('%s/%s/fig/%s/NORM_ScatterTonic_Article_wl_%d',directory_name, Fig_num,experiment_name, idx), '-dsvg', '-painters')
 
 
 
 
-idx=6; 
+idx=4; 
 smax_burst = smax_tonic; %max(max([wl_STATE(:,idx), wl_STATE(:,idx+2)]));
 smin_burst = smin_tonic; % ;%min(min([wl_STATE(:,idx), wl_STATE(:,idx+2)]));
 figure
@@ -884,19 +885,30 @@ set(gcf,'PaperPositionMode','auto');
 set(gcf, 'PaperUnits', 'centimeters');
 set(gcf, 'PaperPosition', [0 0 ptx_scatter*1.5 ptx_scatter*1.5]);
 
-print(sprintf('%s/%s/fig/%s/NORM_ScatterBurst_Article_wl_1',directory_name, Fig_num, experiment_name), '-depsc', '-painters')
+print(sprintf('%s/%s/fig/%s/NORM_ScatterBurst_Article_wl_%d',directory_name, Fig_num, experiment_name, idx), '-dsvg', '-painters')
 
 
 slim = [smin_tonic smin_burst; smax_tonic smax_burst]; 
 csvwrite(sprintf('%s/%s/fig/%s/slim_wl_1',directory_name, Fig_num,experiment_name), slim)
 
 %% ____ corr coff ___
-idx=5;
-corrcoef((wl_STATE(:,idx)'-smin_burst)/(smax_burst-smin_burst), (wl_STATE(:,idx+2)'-smin_burst)/(smax_burst-smin_burst))
+crcf = zeros(6,1);
+rgcf = zeros(6,1);
+for idx=1:1:6
+wl_X =(wl_STATE(:,idx)'-smin_burst)/(smax_burst-smin_burst);  
+wl_Y = (wl_STATE(:,idx+2)'-smin_burst)/(smax_burst-smin_burst);
+mat = corrcoef(wl_X, wl_Y);
+crcf(idx) = mat(2);
 
-idx=6;
-corrcoef((wl_STATE(:,idx)'-smin_burst)/(smax_burst-smin_burst), (wl_STATE(:,idx+2)'-smin_burst)/(smax_burst-smin_burst))
+%[~,~,~,~,stats] = regress(wl_X, wl_Y); 
+%rgcf(idx) = stats(1);
 
+mdl = fitlm(wl_X,wl_Y);
+ftcf(idx) = mdl.Rsquared.Ordinary;
+
+
+
+end
 
 %% _______ MEAN and STD _____
 

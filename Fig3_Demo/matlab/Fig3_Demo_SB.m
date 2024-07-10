@@ -373,15 +373,15 @@ Mks = 4.5;
 
 
 wpredict(:,1) = (Omega_p*demo_pot(:,1)*1/tauw_p+Omega_d*demo_dep(:,1)*1/tauw_d)./(demo_pot(:,1)*1/tauw_p+demo_dep(:,1)*1/tauw_d); 
-wpredict(:,2) = (Omega_p*demo_pot(:,2)*1/tauw_p+Omega_d*demo_dep(:,1)*1/tauw_d)./(demo_pot(:,2)*1/tauw_p+demo_dep(:,2)*1/tauw_d); 
-for idw=1:1:size(w,1)
-    for idx_state=1:1:2
-        if(round(demo_nul(idw,idx_state),4)==1)
-            wpredict(idw,idx_state)=w(idw,(idx_state-1)*Tstate+1);
-        end
-    end
-    
-end
+wpredict(:,2) = (Omega_p*demo_pot(:,2)*1/tauw_p+Omega_d*demo_dep(:,2)*1/tauw_d)./(demo_pot(:,2)*1/tauw_p+demo_dep(:,2)*1/tauw_d); 
+%for idw=1:1:size(w,1)
+%    for idx_state=1:1:2
+%        if(round(demo_nul(idw,idx_state),4)==1)
+%            wpredict(idw,idx_state)=w(idw,(idx_state-1)*Tstate+1);
+%        end
+%    end
+%    
+%end
 
 for idx=1:1:Ncycles*2
     figure(idx)
@@ -390,7 +390,7 @@ for idx=1:1:Ncycles*2
         plot([0 1], [0 1], '-', 'color', [0.5 0.5 0.5])
         plot(wpredict(:,idx), w_BACK(:,idx),'o','Markersize', 1,'MarkerEdgeColor',color_hist,'MarkerFaceColor',color_hist); 
         for idx_p=1:1:length(points)
-            plot(wpredict(idx_w(points(idx_p)),idx)', w_BACK(idx_w(points(idx_p)),idx)','o', 'Markersize', Mks,'MarkerEdgeColor',color_p(idx_p,:),'MarkerFaceColor',color_p(idx_p,:)); 
+            plot(w_BACK(idx_w(points(idx_p)),idx)',wpredict(idx_w(points(idx_p)),idx)', 'o', 'Markersize', Mks,'MarkerEdgeColor',color_p(idx_p,:),'MarkerFaceColor',color_p(idx_p,:)); 
         end
         xlim([0 1])
          ylim([0 1])
@@ -418,6 +418,21 @@ SQE(1) = immse(wpredict(:,1),w_BACK(:,1));
 SQE(2) = immse(wpredict(:,2), w_BACK(:,2)); 
 
 
+crcf = zeros(2,1);
+rgcf = zeros(2,1);
+for idx=1:1:2
+mat = corrcoef(wpredict(:,idx), w_BACK(:,idx));
+crcf(idx) = mat(2);
+
+%[~,~,~,~,stats] = regress(wl_X, wl_Y); 
+%rgcf(idx) = stats(1);
+
+mdl = fitlm(wpredict(:,idx),w_BACK(:,idx));
+ftcf(idx) = mdl.Rsquared.Ordinary;
+
+
+
+end
 
 
 
@@ -467,13 +482,14 @@ for idx_t = 1:1:length(Tshow)
     set(gcf, 'PaperUnits', 'centimeters');
     set(gcf, 'PaperPosition', [0 0 ptx_hist*3 pty_hist*0.75]);
     if(idx_t==length(Tshow)/2)
-        print(sprintf('/Users/kathleen/Documents/PhD/2023-Project/%s/fig/%s_%s_%s_EVOL_tonic',Fig_num, experiment_name, region, bound_type), '-depsc', '-painters')
+        print(sprintf('/Users/kathleen/Documents/PhD/2023-Project/%s/fig/%s_%s_%s_EVOL_tonic',Fig_num, experiment_name, region, bound_type), '-dsvg', '-painters')
+       
     end
     if(idx_t==length(Tshow))
-        print(sprintf('/Users/kathleen/Documents/PhD/2023-Project/%s/fig/%s_%s_%s_EVOL_burst',Fig_num, experiment_name, region, bound_type), '-depsc', '-painters')
-    end
+        print(sprintf('/Users/kathleen/Documents/PhD/2023-Project/%s/fig/%s_%s_%s_EVOL_burst',Fig_num, experiment_name, region, bound_type), '-dsvg', '-painters')
 
-        
+    
+    end
 end
   
 

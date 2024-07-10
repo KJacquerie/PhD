@@ -18,8 +18,8 @@ NB_dgt=2;
 NB_states=N_cycles*2; 
 
 directory_name = "/Users/kathleen/Documents/PhD/2023-Project/Fig6"; 
-model = "Graupner2012";
-experiment_name =  "nOL"; % nOL
+model = "Graupner2016";
+experiment_name =  "OL"; % nOL
 
 
 nPost = 1; 
@@ -191,5 +191,26 @@ print(sprintf('%s/fig/%s/%s/STATE_RF',directory_name, model, experiment_name),'-
 
 
 
+%% quantification pixel 
 
+switch experiment_name
+    case "nOL"  
+        QUANTIF_pat = [mean(wg_shaped{1,end}(:,1:2),'all') mean(wg_shaped{1,end}(:,3:4),'all'); mean(wg_shaped{2,end}(:,1:2),'all') mean(wg_shaped{2,end}(:,3:4),'all')]
+        %perc_pat1 = (QUANTIF_pat(1,1)- QUANTIF_pat(1,2))/QUANTIF_pat(1,2)
+        %perc_pat2 = (QUANTIF_pat(2,2)- QUANTIF_pat(2,1))/QUANTIF_pat(2,1)
+        
+        perc_pat1 = 2*(QUANTIF_pat(1,1)- QUANTIF_pat(1,2))/(QUANTIF_pat(1,2)+QUANTIF_pat(1,1))
+        perc_pat2 = 2*(QUANTIF_pat(2,1)- QUANTIF_pat(2,2))/(QUANTIF_pat(2,2)+QUANTIF_pat(2,1))
+       
+    case "OL"
+        QUANTIF_pat = [mean(wg_shaped{1,end}(:,1:2),'all') mean(wg_shaped{1,end}(:,3:4),'all'); mean(wg_shaped{2,end}(1:2,:),'all') mean(wg_shaped{2,end}(3:4,:),'all')]
+        %perc_pat1 = (QUANTIF_pat(1,1)- QUANTIF_pat(1,2))/QUANTIF_pat(1,2) 
+        %perc_pat2 = (QUANTIF_pat(2,1)- QUANTIF_pat(2,2))/QUANTIF_pat(2,2) 
+        
+        perc_pat1 = 2*(QUANTIF_pat(1,1)- QUANTIF_pat(1,2))/(QUANTIF_pat(1,2)+QUANTIF_pat(1,1))
+        perc_pat2 = 2*(QUANTIF_pat(2,1)- QUANTIF_pat(2,2))/(QUANTIF_pat(2,2)+QUANTIF_pat(2,1))
+        
+end
 
+csvwrite(sprintf('%s/fig/%s/%s/perc_pat',directory_name, model, experiment_name),[perc_pat1 perc_pat2])
+   

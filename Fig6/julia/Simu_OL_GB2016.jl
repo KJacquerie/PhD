@@ -25,6 +25,10 @@ const SD = "no"
 const gINIT = 0.02 #range(0.55, 0.75,5): va de 0.55 à 0.75 en 5 steps #range(0.05, 0.5,10)
 const new_circuit=1
 
+## Late-phase plasticity
+const tauL =200
+
+
 #Pattern characterization
 const data = readdlm("dataset_2BarrePattern_OL.dat")
 const NB_pixels = size(data, 1)
@@ -291,7 +295,7 @@ const theta_d = 1.0
 
 const Omega_p = gamma_p/(gamma_p+gamma_d)
 const Omega_burst = 0.6
-const Omega_d = 0.3
+const Omega_d = 0.0#3
 const Omega_0 = 0.
 
 const tauw_p = tau_w /(gamma_p + gamma_d)
@@ -301,8 +305,7 @@ const zeta = tauw_d / tauw_p
 const tau_x = 1
 
 
-## Late-phase plasticity
-const tauL =50 
+
 
 
 ##   CONNECTIVITY

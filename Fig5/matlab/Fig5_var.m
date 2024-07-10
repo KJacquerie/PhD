@@ -10,14 +10,18 @@ experiment_name = "Graupner2012_VAR";
 experiment_type = "low_dep"; 
 bound_type = "SB";
 fMax=50; 
-new_curves=1; 
+new_curves=0; 
 Fig_num = "Fig5"; 
 
-%tau_val= 100;
 tau_mat = 100:100:1000;
+
+SNR_count=zeros(length(100:100:1000), 7)
+
+%tau_val= 100;
+
 for idx_tau = 1:1:size(tau_mat,2)
     tau_val = tau_mat(idx_tau)
-for idx_lINIT=1:1:2
+for idx_lINIT=1:1:7
     idx_lINIT
     Ncycles=5; 
     Tcycle=30000; 
@@ -174,7 +178,16 @@ for idx_lINIT=1:1:2
 
         SNR_tonic(count)  = max(wl_tonic(:,count))/mean(wl_tonic(:,count)); 
         SNR_burst(count) = max(wl_burst(:,count))/mean(wl_burst(:,count)); 
-
+        
+        if(SNR_tonic(count)>SNR_burst)
+            SNR_count(idx_tau, idx_lINIT) = SNR_count(idx_tau, idx_lINIT) -1;
+            SNR_param{idx_tau,idx_lINIT}(count)=-1;
+        else
+            if(SNR_tonic(count)<SNR_burst(count))
+                SNR_count(idx_tau, idx_lINIT) = SNR_count(idx_tau, idx_lINIT) +1;
+                SNR_param{idx_tau,idx_lINIT}(count)=+1;
+            end
+        end
         %SNR_tonic(count)  = mean(wl_tonic(1:5,count))/mean(wl_tonic(6:100,count)); 
         %SNR_burst(count) = mean(wl_burst(1:5,count))/mean(wl_burst(6:100,count)); 
         count=count+1; 
@@ -199,5 +212,24 @@ for idx_lINIT=1:1:2
 
 
     close all
+    
+    %upselection 2
+    %downselection -2
+    % no change 0
+    % from down to up 1
+    % from up to down -1
+    if(~isempty(sort([strfind(SNR_param{idx_tau,idx_lINIT}>=0, [0 1]) strfind(SNR_param{idx_tau,idx_lINIT}>=0, [1 0])])))
+        if(SNR_param{idx_tau,idx_lINIT}(1)>0)
+            SNR_val(idx_tau, idx_lINIT) = -1;
+        else
+            SNR_val(idx_tau, idx_lINIT) = 1;
+        end
+    else
+        if(SNR_param{idx_tau,idx_lINIT}(1)>0)
+            SNR_val(idx_tau, idx_lINIT) = 2;
+        else
+            SNR_val(idx_tau, idx_lINIT) = -2;
+        end
+    end
 end
 end

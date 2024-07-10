@@ -22,8 +22,11 @@ include("model_GB2016.jl")
 model = "Graupner2016" #or OLD
 
 const SD = "no"
-const gINIT = 0.06 #range(0.55, 0.75,5): va de 0.55 à 0.75 en 5 steps #range(0.05, 0.5,10)
+const gINIT = 0.02 #range(0.55, 0.75,5): va de 0.55 à 0.75 en 5 steps #range(0.05, 0.5,10)
 const new_circuit=1
+
+## late-phase plasticity
+const tauL = 200
 
 #Pattern characterization
 const data = readdlm("dataset_2BarrePattern_nOL.dat")
@@ -300,8 +303,7 @@ const zeta = tauw_d / tauw_p
 const tau_x = 1
 
 
-## late-phase plasticity
-const tauL = 50 
+
 
 ##   CONNECTIVITY
 const gIGABAA = (2. * ones(ncellsC))./ ncellsI
