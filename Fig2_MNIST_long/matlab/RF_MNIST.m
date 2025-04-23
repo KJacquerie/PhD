@@ -8,7 +8,7 @@ set(groot, 'defaultLegendInterpreter','latex');
 %%
 
 
-experiment_name = "Graupner2012_noBURST"; 
+experiment_name = "Graupner2012_silent_1Hz"; 
 directory_name = "/Users/kathleen/Documents/PhD/2023-Project/Fig2_MNIST_long"; 
 
 
@@ -117,8 +117,9 @@ close all
 %% RF for each digit at each state separetly
 
 chosen_state = [1 2 201 202 219 220 381 382 399 400 401 402];
+%chosen_state = [1:20:160]
   
-for idx_dgt = 1:1:NB_dgt
+for idx_dgt = 10:1:NB_dgt
     
     for i = 1:1:length(chosen_state)
         idx=chosen_state(i); 
@@ -188,7 +189,8 @@ end
 %chosen_state = [1 2 19 20 21 22 39 40 41 42 59 60 61 62];
 
 
-%chosen_state = [1 2 201 202 219 220 381 382 399 400 401 402];
+chosen_state = [1 2 201 202 219 220 381 382 399 400 401 402];
+chosen_state = [1:50:260]
 w_shaped  = {}; 
 g_shaped  = {}; 
 wg_shaped = {};
@@ -204,6 +206,8 @@ for idx_dgt = 1:1:NB_dgt
         g_shaped{idx_dgt,idx} = reshape(g((idx_dgt-1)*nPre+1:idx_dgt*nPre,idx ),NB_grid,NB_grid); 
         wg_shaped{idx_dgt,idx} = (w_shaped{idx_dgt,idx}.*g_shaped{idx_dgt,idx} - wgMIN)/(wgMAXX - wgMIN);
 
+        % Add a small constant to avoid log(0) issues
+        %wg_shaped{idx_dgt, idx}(wg_shaped{idx_dgt, idx} == 0) = 0.0001;
         
         %nexttile
         imagesc(wg_shaped{idx_dgt,idx}',clims)  
@@ -212,6 +216,9 @@ for idx_dgt = 1:1:NB_dgt
         box off 
         gcff = set(gcf); 
         gcff.WindowState = 'maximized';
+         % Set logarithmic color scale
+        set(gca, 'ColorScale', 'log')
+        
         count=count+1;
     end
     

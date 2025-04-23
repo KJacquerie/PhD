@@ -1,0 +1,202 @@
+{\rtf1\ansi\ansicpg1252\cocoartf2821
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
+{\colortbl;\red255\green255\blue255;}
+{\*\expandedcolortbl;;}
+\paperw11900\paperh16840\margl1440\margr1440\vieww23480\viewh13380\viewkind0
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
+
+\f0\fs24 \cf0 # Code for the article\
+\'ab\'a0Switches from tonic to burst firing enable memory consolidation through late-phase synaptic plasticity\'a0\'bb\
+by Kathleen Jacquerie, Danil Tyulmankov, Pierre Sacre, Guillaume Drion. \
+\
+The scripts are mainly written by Kathleen Jacquerie. \
+Caroline Minne, Juliette Ponnet, and Nora Benghalem worked on this code for their master's theses.\
+\
+\
+Each Figure from the article is associated with a corresponding folder. \
+Each folder is divided into the same structure: \
+/data - contains the parameter used to generate the simulation\
+/julia - main scripts to run the simulations. \
+All computational experiments are launched thanks to a *Simu_... .jl* calling a function with the differential equations of the conductance-based models (neuronal model) and the synaptic weight change (plasticity rules) found in *model_... .jl*. \
+/matlab - codes to analyze and plot the network simulations. \
+\
+information\
+l_ij could have been replaced by g_AMPA_ij \
+notational for models: \
+GB2012 = TB+L model\
+GB2012_learn = TT model\
+GB2012_reset = TB model\
+GB2012_noBURST = TQ model\
+\
+\
+### Fig1\
+JULIA: Simulate a network of neurons with /julia/Simu_scenario_GB2012.jl\
+\ul Inputs\ulnone \
+gion.dat: intrinsic parameters of the neurons\
+gsyn.dat: initial parameters of the late weights\
+neurons_freq.dat: frequencies associated with each neuron at the different states.\
+\
+\ul Outputs\ulnone \
+- Voltage recordings\
+- Firing pattern properties\
+- LFP recordings\
+- Synaptic weight recordings\
+\
+MATLAB: Plot traces and quantify firing pattern properties with /matlab/Fig1_plotV.m \
+\
+### Fig2_MNIST_long\
+JULIA: Simulate the pattern learning task in different configurations of switches and plasticity rules:\
+Figure 2B: Simu_MNIST_GB2012.jl\
+Figure 2C: Simu_MNIST_GB2012_learn.jl\
+\ul Inputs\
+\ulnone digit_presented.dat: contains the sequence of digits sequentially learned during the simulation. \
+idx_presented.dat: contains the index of the sample learned at each state picked from the dataset. \
+neurons_freq.dat: frequencies associated with each neuron at the different states.\
+neurons_freq_learn.dat: same but for the additional tonic firing states (figure 2C)\
+\
+\ul Outputs\ulnone \
+w_state.dat: values of the early weights at the end of each state. \
+g_state.dat: values of the late weights at the end of each state. \
+\
+MATLAB: \
+RF_MNIST.m: code to obtain the weight matrix in the image\
+RF_MNIST_corr.m: code to compute the correlation between the mean dataset (saved in mean_MNIST_20.dat for Figure 2D and mean_MNIST_learn.dat for Figure 2E)\
+\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
+\cf0 ### Fig2_SI\
+JULIA\
+Simu_scenario_GB2012.jl: code for supplementary figures associated with Fig 2\
+Simu_scenario_GB2012_RESET.jl: code for supplementary figures associated with Fig 2\
+Simu_scenario_GB2012_noBURST.jl: code for supplementary figures associated with Fig 2\
+\
+\ul Inputs\ulnone \
+gion.dat\
+gsyn.dat\
+neurons_freq.dat\
+\
+\ul Outputs\ulnone \
+- Voltage recordings\
+- Firing pattern properties\
+- Synaptic weight recordings\
+\
+MATLAB:\
+Fig2_SI_wl.m plot traces of the early weights, late weights, and total weights. \
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
+\cf0 \
+### Fig3\
+JULIA\
+Simulate the network with the weights obtained in Fig 2, plasticity is blocked, we record the spike time of the different output neurons.\
+Simu_MNIST_GB2012_PREDICTION_ntk_fair.jl associated with Figure 3 used the network model_MNIST_GB2012_fair\
+if the user wants to check the prediction on the train or test, the dataset needs to be changed by commenting the indicated line.\
+if the user wants to compare normalized weight or not, the normalization factor needs to be adapted. \
+\
+\ul Inputs\
+\ulnone w_state.dat early-weights obtained in Fig 2\
+g_state.dat late-weights obtained in Fig 2\ul \
+\
+Outputs\
+\ulnone spkt_mat_i.dat: the spike time for each output neurons at the i-th state. \
+\
+MATLAB\
+plot_prediction_train.m: plot the evolution of the accuracy as function of the state.\
+\
+### Fig4\
+JULIA:\
+Simulate the evolution of the early weight for several switches of firing activities. \
+Simu_scenario_GB2012_RESET.jl associated with Figure 4\
+Simu_TUNE.jl associated with Fig SI for one tonic firing state followed by three burst firing states with different hyperpolarizing currents. \
+\
+\ul Inputs\
+\ulnone gion.dat: intrinsic parameters of the neurons\
+gsyn.dat: initial parameters of the late weights\
+neurons_freq.dat: frequencies associated with each neuron at the different states.\
+\
+\ul Outputs\ulnone \
+- Voltage recordings\
+- Firing pattern properties\
+- LFP recordings\
+- Synaptic weight recordings\
+\
+MATLAB:\
+Fig4AB.m: code to obtain w(t), histograms, and scatter plot - different forms of normalization are encoded. \
+Fig4C_tune.m: code associated with SIMU_TUNE.jl\
+\
+\
+### Fig4_Demo \'97 Fig SI\
+JULIA:\
+Simu_Graupner2016.jl  code used to simulate the evolution of the early weight for the model of Graupner et al. 2016. \
+Simu_PairBased.jl code used to simulate the evolution of the early weight in the Pair-Based model. \
+This simulation can be done with parameter sets obtained from the cortex (CTX) or the hippocampus (HPC) [region] depending on the paper. The weight dependency can be soft-bound (SB) or hard-bound (HB) [bound_type]. \
+\
+\ul Inputs\
+\ulnone gion.dat\
+gsyn.dat\
+neurons_freq.dat\
+\
+\ul Outputs\ulnone \
+- Voltage recordings\
+- Firing pattern properties\
+- Synaptic weight recordings\
+\
+MATLAB:\
+Fig4_Demo_SB.m for Fig SI is associated with the analytical prediction of the converging point. \
+set new_curves =1 to generate new traces. The code takes time since it loads all the data. \
+This code traces the scatter plot. It also compares the analytical prediction and the simulation values. \
+\
+###  Fig4_Model \'97 Fig SI\
+JULIA:\
+Simu_XX.jl runs the different simulations for the model \'ab\'a0XX\'a0\'bb (can be Graupner, Deperrois, \'85). \
+\
+MATLAB:\
+Fig4_scatter_SB.m retrieves the scatter plot for soft-bound models\
+Fig4_scatter_HB.m retrieves the scatter plot for hard-bound models\
+\
+\
+\
+### Fig5\
+JULIA\
+Simu_SNR_GB2012_VAR.jl simulates the network with different initial conditions for eta. \
+Disclaimer: eta=1/tau or 1/tauG\
+and l(0) is gCAMPA. \
+\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
+\cf0 \ul \ulc0 Inputs\ulnone \
+gion.dat\
+gsyn.dat\
+neurons_freq.dat\
+\
+\ul Outputs\
+\ulnone w_BACK: early-weight at the end of each state. \
+g_BACK: late-weight at the end of each state.\
+\
+\
+MATLAB\
+Fig5_var_quantif.m plots the evolution of the SNR for the different parameter conditions and compute the category between the four microscopic trends. \
+\
+### Fig 6\
+Comparison between 2012 model (folder: Graupner2012) and 2016 model (folder: Graupner2016) between non-overlapping patterns (folder: nOL) and overlapping patterns (folder: OL). \
+\
+JULIA\
+Simu_nOL_GB2012.jl: code to simulate 2012 model with non-overlapping patterns. \
+Simu_OL_GB2012.jl: code to simulate 2012 model with overlapping patterns. \
+Simu_nOL_GB2016.jl: code to simulate 2016 model with non-overlapping patterns. \
+Simu_OL_GB2016.jl: code to simulate 2016 model with overlapping patterns. \
+\
+\ul Inputs\ulnone \
+/\
+\
+\ul Outputs\
+\ulnone w_state8: early-weight at the end of each state. \
+g_state8: late-weight at the end of each state.\
+\
+\
+MATLAB\
+Fig6_RF.m: code to obtain Figure Eiii, Eiv, Fiii, Fiv for the weight matrices. Change the name of the experiment  [model] (\'ab\'a0Graupner2012\'a0\'bb, \'ab\'a0Graupner2016\'a0\'bb) or the [experiment_name]  (\'ab\'a0OL\'a0\'bb, \'ab\'a0nOL\'a0\'bb)\
+Fig6_quantif.m: code to obtain the correlation traces. \
+\
+\
+\
+\
+\
+\
+}

@@ -185,6 +185,8 @@ imagesc(SNR_val(idx_row,:))
 
 hexMap = {'1E4A76', '5FA3BF', 'E17438', 'F3B15D',  '70AD47'};
 hexMap = {'30708E', '7DC7D2', 'EDECED', 'E58331', 'C43424'} ;
+hexMap = {'FFD579', 'A9A9A9', 'EDECED', 'A9D18E','649C41'};%A9A9A9
+hexMap = {'662506', 'C55A11', 'EDECED', 'FEC44F', 'FFF7BC'}
 %hexMap = {'C0C0C0', '808080', '404040', '000000', 'FF99CC', '9999FF', '3333FF', '000099', '3399FF', '0066CC', '99CCFF', '66B2FF', '66FFFF', '006633', '00CC66', '66FF66', '00FF00', '009900', 'FFFF99', 'FFFF00', 'CCCC00', 'FFB266', 'CC6600', '994C00', 'FF9999', 'FF0000', 'CC0000', '990000'}
 myColorMap = zeros(length(hexMap), 3); % Preallocate
 for k = 1 : length(hexMap)

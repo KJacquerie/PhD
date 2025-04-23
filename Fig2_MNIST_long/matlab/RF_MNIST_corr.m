@@ -275,7 +275,7 @@ for idx_dgt=1:1:NB_dgt
     xlim([0 402])
     set(figure(idx_dgt),'PaperPositionMode','auto');
     set(figure(idx_dgt), 'PaperUnits', 'centimeters');
-    set(figure(idx_dgt), 'PaperPosition', [0 0 30 15]);
+    set(figure(idx_dgt), 'PaperPosition', [0 0 15 15]);
     xlabel('state')
     ylabel('CORR')
     print(sprintf('%s/fig/_CORR_%d',directory_name, idx_dgt),'-dsvg', '-painters')
@@ -297,7 +297,7 @@ for idx_model=1:1:4
     cmap = colormap(parula(10));
     hold on
     for idx_dgt=1:1:NB_dgt  
-        plot(1:402, Err_Mod(:,idx_dgt), 'linewidth', 1.2, 'color', hex2rgb(color(idx_dgt))) %, 'color', cmap(idx_dgt,:),
+        plot(1:402, Err_Mod(:,idx_dgt), 'linewidth', 1, 'color', hex2rgb(color(idx_dgt))) %, 'color', cmap(idx_dgt,:),
     end
     yticks(-1:1:1)
     yticklabels({'', '', '', '', ''})
@@ -305,7 +305,7 @@ for idx_model=1:1:4
     xticklabels({'', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''})
     set(figure(100+idx_model),'PaperPositionMode','auto');
     set(figure(100+idx_model), 'PaperUnits', 'centimeters');
-    set(figure(100+idx_model), 'PaperPosition', [0 0 12 5]);
+    set(figure(100+idx_model), 'PaperPosition', [0 0 20 5]); %[0 0 4.75 4]);
     xlim([1 410])
     ylim([-1.1 1.1])
     %xlabel('state')
